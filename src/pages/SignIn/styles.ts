@@ -40,6 +40,7 @@ export const CreateAccountButton = styled.TouchableOpacity`
   justify-content: center;
   flex-direction: row;
 `;
+
 export const CreateAccountText = styled.Text`
   color: #ff9000;
   font-size: 16px;
