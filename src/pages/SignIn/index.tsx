@@ -5,12 +5,16 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import * as Yup from 'yup';
 
+import getValidationError from '../../utils/getValidationError';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
@@ -25,12 +29,49 @@ import {
   CreateAccountText,
 } from './styles';
 
+interface SignInFormData {
+  email: string;
+  password: string;
+}
+
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
-  const handleSignIn = useCallback((data: object) => {
-    console.log(data);
+  const handleSignIn = useCallback(async (data: SignInFormData) => {
+    formRef.current?.setErrors({});
+
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required('E-mail é obrigatório')
+          .email('Digite um E-mail válido'),
+        password: Yup.string().required('Informe sua senha'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // await signIn({
+      //   email: data.email,
+      //   password: data.password,
+      // });
+
+      // history.push('/dashboard');
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationError(err);
+        formRef.current?.setErrors(errors);
+        return;
+      }
+
+      Alert.alert(
+        'Erro na autenticação',
+        'Aconteceu um erro ao tentar fazer o login, tente novamente',
+      );
+    }
   }, []);
 
   return (
@@ -58,8 +99,11 @@ const SignIn: React.FC = () => {
                 name="email"
                 icon="mail"
                 placeholder="E-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
               />
               <Input
+                ref={passwordInputRef}
                 secureTextEntry
                 name="password"
                 icon="lock"
