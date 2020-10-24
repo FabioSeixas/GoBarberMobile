@@ -10,7 +10,7 @@ interface ButtonProps extends RectButtonProperties {
 const Button: React.FC<ButtonProps> = ({ children, ...rest }) => {
   return (
     <Container {...rest}>
-      <ViewButton accessible>
+      <ViewButton>
         <ButtonText>{children}</ButtonText>
       </ViewButton>
     </Container>
