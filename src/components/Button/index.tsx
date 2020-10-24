@@ -1,7 +1,7 @@
 import React from 'react';
 import { RectButtonProperties } from 'react-native-gesture-handler';
 
-import { Container, ButtonText } from './styles';
+import { Container, ViewButton, ButtonText } from './styles';
 
 interface ButtonProps extends RectButtonProperties {
   children: string;
@@ -10,7 +10,9 @@ interface ButtonProps extends RectButtonProperties {
 const Button: React.FC<ButtonProps> = ({ children, ...rest }) => {
   return (
     <Container {...rest}>
-      <ButtonText>{children}</ButtonText>
+      <ViewButton accessible>
+        <ButtonText>{children}</ButtonText>
+      </ViewButton>
     </Container>
   );
 };
